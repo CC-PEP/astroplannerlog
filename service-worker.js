@@ -1,59 +1,47 @@
-const CACHE_NAME = "astroplannerlog-v1";
 
+const CACHE_NAME = "astroplannerlog-v1";
 const OFFLINE_URLS = [
   "./",
-  "./index.html",
-  "./app.css",
-  "./app.js",
-  "./manifest.webmanifest",
-  "./icons/astroplannerlog-192.png",
-  "./icons/astroplannerlog-512.png"
+  "index.html",
+  "app.css",
+  "app.js",
+  "manifest.webmanifest",
+  "astroplannerlog-192.png",
+  "astroplannerlog-512.png"
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(OFFLINE_URLS))
   );
-  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
       )
     )
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
-  const { request } = event;
-
-  // Only http/https
-  if (request.method !== "GET" || !request.url.startsWith(self.location.origin)) {
-    return;
-  }
-
   event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-
-      return fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-          return response;
-        })
-        .catch(() => {
-          // Fallback: if main document fails, show cached index
-          if (request.mode === "navigate") {
-            return caches.match("./index.html");
+    caches.match(event.request).then((response) => {
+      return (
+        response ||
+        fetch(event.request).catch(() => {
+          // Fallback to index for navigation requests when offline
+          if (event.request.mode === "navigate") {
+            return caches.match("index.html");
           }
-        });
+        })
+      );
     })
   );
 });

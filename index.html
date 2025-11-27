@@ -5,13 +5,14 @@
   <title>AstroPlanner Logs Viewer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#050814" />
+  <meta name="color-scheme" content="dark" />
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="AstroPlannerLog" />
-  <link rel="apple-touch-icon" href="icons/astroplannerlog-512.png" />
+  <link rel="apple-touch-icon" href="astroplannerlog-512.png" />
 
   <link rel="stylesheet" href="app.css" />
 </head>
@@ -66,6 +67,13 @@
           <label for="scopeFilter">Telescope</label>
           <select id="scopeFilter">
             <option value="__all__">All telescopes</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="dateFilter">Date</label>
+          <select id="dateFilter">
+            <option value="__all__">All dates</option>
           </select>
         </div>
       </div>

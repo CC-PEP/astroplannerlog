@@ -5,6 +5,7 @@ const state = {
   type: "__all__",
   const: "__all__",
   scope: "__all__",
+  date: "__all__",
 };
 
 let allLogs = [];
@@ -17,6 +18,7 @@ const searchInput = document.getElementById("searchInput");
 const typeFilter = document.getElementById("typeFilter");
 const constFilter = document.getElementById("constFilter");
 const scopeFilter = document.getElementById("scopeFilter");
+const dateFilter = document.getElementById("dateFilter");
 const logsList = document.getElementById("logsList");
 
 fileInput.addEventListener("change", (e) => {
@@ -51,6 +53,11 @@ constFilter.addEventListener("change", () => {
 
 scopeFilter.addEventListener("change", () => {
   state.scope = scopeFilter.value;
+  render();
+});
+
+dateFilter.addEventListener("change", () => {
+  state.date = dateFilter.value;
   render();
 });
 
@@ -123,16 +130,22 @@ function buildFilters(logs) {
   const types = new Set();
   const consts = new Set();
   const scopes = new Set();
+  const dates = new Set();
 
   logs.forEach((log) => {
     if (log.type) types.add(log.type);
     if (log.constellation) consts.add(log.constellation);
     if (log.telescope) scopes.add(log.telescope);
+    if (log.datetime) {
+      const datePart = log.datetime.split(" ")[0];
+      if (datePart) dates.add(datePart);
+    }
   });
 
   fillSelect(typeFilter, ["__all__", ...Array.from(types).sort()], "All types");
   fillSelect(constFilter, ["__all__", ...Array.from(consts).sort()], "All constellations");
   fillSelect(scopeFilter, ["__all__", ...Array.from(scopes).sort()], "All telescopes");
+  fillSelect(dateFilter, ["__all__", ...Array.from(dates).sort()], "All dates");
 }
 
 function fillSelect(select, values, allLabel) {
@@ -161,6 +174,11 @@ function applyFilters(logs) {
     if (state.const !== "__all__" && log.constellation !== state.const) return false;
     if (state.scope !== "__all__" && log.telescope !== state.scope) return false;
 
+    if (state.date !== "__all__") {
+      const datePart = (log.datetime || "").split(" ")[0];
+      if (datePart !== state.date) return false;
+    }
+
     if (state.search) {
       const haystack =
         (log.object || "") +
@@ -169,7 +187,9 @@ function applyFilters(logs) {
         " " +
         (log.type || "") +
         " " +
-        (log.constellation || "");
+        (log.constellation || "") +
+        " " +
+        (log.telescope || "");
       if (!haystack.toLowerCase().includes(state.search)) return false;
     }
 
