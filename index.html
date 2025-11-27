@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AstroPlanner Logs Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#050814" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AstroPlannerLog" />
+  <link rel="apple-touch-icon" href="icons/astroplannerlog-512.png" />
+
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <div class="app-root">
+    <header class="app-header">
+      <h1 class="app-title">AstroPlanner Logs Viewer</h1>
+      <p class="app-subtitle">
+        Upload an export from AstroPlanner (TSV / .txt) and browse your observing logs offline.
+      </p>
+
+      <div class="file-row">
+        <label class="file-button">
+          <input type="file" id="fileInput" accept=".txt,.tsv,.csv" />
+          <span class="file-icon">📄</span>
+          <span id="fileLabel">Choose observations file…</span>
+        </label>
+        <div class="file-meta">
+          <span id="statsLogs">Logs: 0</span>
+          <span>·</span>
+          <span id="statsObjects">Objects: 0</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="filters-card">
+      <div class="filter-group">
+        <label for="searchInput">Object / notes</label>
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Start typing object ID, name or text from notes…"
+        />
+      </div>
+
+      <div class="filter-row">
+        <div class="filter-group">
+          <label for="typeFilter">Object type</label>
+          <select id="typeFilter">
+            <option value="__all__">All types</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="constFilter">Constellation</label>
+          <select id="constFilter">
+            <option value="__all__">All constellations</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="scopeFilter">Telescope</label>
+          <select id="scopeFilter">
+            <option value="__all__">All telescopes</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <main class="logs-list" id="logsList">
+      <!-- Cards will be injected here -->
+    </main>
+
+    <footer class="app-footer">
+      <p>
+        Tip: add this page to your Home Screen to use it as an offline app at the telescope.
+      </p>
+      <p class="app-footer-link">
+        <a href="https://old.r-sky.org" target="_blank" rel="noopener">old.r-sky.org</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
